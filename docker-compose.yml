@@ -1,0 +1,10 @@
+version: '2'
+services:
+  nginx_php_app:
+    image: r2integration/joelcorey-basic-php-yii2-app
+    build:
+      context: ./php_yii2
+    ports:
+      - 8080:80
+    environment:
+      - YII_ENV=debug
