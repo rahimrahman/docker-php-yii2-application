@@ -1,10 +1,35 @@
 version: '2'
 services:
-  nginx_php_app:
-    image: r2integration/joelcorey-basic-php-yii2-app
+  php_app:
+    container_name: php_yii2_app
+    image: r2integration/example-php-yii2-app
     build:
-      context: ./php_yii2
+      context: ./php-yii2
     ports:
       - 8080:80
+    links:
+      - mysql:mysql
+  mysql:
+    container_name: mysql_yii2
+    image: mysql:5.7
+    ports:
+      - 30306:3306
+    volumes_from:
+      - mysql_data:rw
     environment:
-      - YII_ENV=debug
+      - MYSQL_ROOT_PASSWORD=mysqlroot
+      - MYSQL_DATABASE=yii2_basic
+      - MYSQL_USER=yiiappuser
+      - MYSQL_PASSWORD=password
+  mysql_data:
+    container_name: mysql_data_yii2
+    image: alpine:3.4
+    command: /bin/true
+    volumes:
+      - /var/lib/mysql
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - 8081:80
+    links:
+      - mysql:db
