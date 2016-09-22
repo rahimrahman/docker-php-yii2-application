@@ -1,0 +1,38 @@
+version: '2'
+services:
+  local_php_app:
+    container_name: local_php_yii2_app
+    image: r2integration/example-php-yii2-app:local
+    build:
+      context: ./php-yii2
+      dockerfile: Dockerfile-local
+    volumes:
+      - ./php-yii2/yii2-basic:/var/www/html
+    ports:
+      - 8080:80
+    links:
+      - local_mysql:mysql
+  local_mysql:
+    container_name: local_mysql_yii2
+    image: mysql:5.7
+    ports:
+      - 30306:3306
+    volumes_from:
+      - local_mysql_data:rw
+    environment:
+      - MYSQL_ROOT_PASSWORD=mysqlroot
+      - MYSQL_DATABASE=yii2_basic
+      - MYSQL_USER=yiiappuser
+      - MYSQL_PASSWORD=password
+  local_mysql_data:
+    container_name: local_mysql_data_yii2
+    image: alpine:3.4
+    command: /bin/true
+    volumes:
+      - /var/lib/mysql
+  local_phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - 8081:80
+    links:
+      - local_mysql:db

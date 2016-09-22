@@ -1,0 +1,9 @@
+FROM wodby/nginx-php-7-alpine
+
+# below are equivalent to `RUN usermod -u 1000 nginx`
+RUN deluser nginx
+RUN addgroup -g 50 nginx
+RUN adduser -u 1000 -G nginx -H -D nginx
+
+COPY nginx.conf /etc/nginx/conf.d/vhost.conf
+COPY php-fpm.conf /etc/php7/php-fpm.conf
